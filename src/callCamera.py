@@ -27,10 +27,14 @@ while(True):
 
     # Display the resulting frame
     topLevel = [i for i, x in enumerate(hirerarchy[0]) if x[3]==-1]
-    countChildren = [hirerarchy for i in topLevel]
+    rects = [cv2.minAreaRect(contours[i]) for i in topLevel]
+    boxes = [cv2.boxPoints(rect) for rect in rects]
+    boxes = np.int0(boxes)
+    areas = [cv2.contourArea(box) for box in boxes]
+    # countChildren = [hirerarchy for i in topLevel]
 
     # for cnts in contours:
-    cv2.drawContours(frame,[contours[i] for i in topLevel],-1,(255,0,255),2)
+    cv2.drawContours(frame,[boxes[i] for i in range(len(areas)) if areas[i] >= 3000],-1,(255,0,255),2)
 
     cv2.imshow('frame',frame)
     cv2.imshow('gray',gray)
