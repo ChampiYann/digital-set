@@ -45,10 +45,10 @@ while(True):
     areas = [cv2.contourArea(box) for box in boxes]
 
     # Scan rectangles for for the ones looking like cards
-    cardIDs = [i for i in range(len(contours)) if areas[i] >= 3000 and hirerarchy[0][i][3] == -1]
+    cardIDs = [i for i in range(len(contours)) if areas[i] > 3000 and hirerarchy[0][i][3] == -1]
     cards = boxes[cardIDs]
 
-    numElem = [len([hire for hire in hirerarchy[0] if hire[3] == j]) for j in cardIDs]
+    numElem = [len([i for i in range(len(contours)) if hirerarchy[0][i][3] == j and areas[i] > 500]) for j in cardIDs]
 
     for i in range(len(cardIDs)):
         M = cv2.moments(cards[i])
