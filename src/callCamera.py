@@ -9,10 +9,31 @@ while(True):
     ret, frame = cap.read()
     # frame = cv2.imread('.\set.jpg')
 
-    # Convert to grayscale
-    gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    # Make a binary version of it
-    ret3,thresh1 = cv2.threshold(gray,120,255,cv2.THRESH_BINARY)
+    #-----Converting image to LAB Color model----------------------------------- 
+    lab= cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+    # cv2.imshow("lab",lab)
+
+    #-----Splitting the LAB image to different channels-------------------------
+    l, a, b = cv2.split(lab)
+    # cv2.imshow('l_channel', l)
+    # cv2.imshow('a_channel', a)
+    # cv2.imshow('b_channel', b)
+
+    #-----Applying CLAHE to L-channel-------------------------------------------
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(10,10))
+    cl = clahe.apply(l)
+    # cv2.imshow('CLAHE output', cl)
+
+    #-----Merge the CLAHE enhanced L-channel with the a and b channel-----------
+    limg = cv2.merge((cl,a,b))
+    # cv2.imshow('limg', limg)
+
+    #-----Converting image from LAB Color model to RGB model--------------------
+    final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+    # cv2.imshow('final', final)
+
+    gray = cv2.cvtColor(final,cv2.COLOR_BGR2GRAY)
+    gray,thresh1 = cv2.threshold(gray,160,255,cv2.THRESH_BINARY)
     gray = np.float32(thresh1)
     # find the contours
     contours,hirerarchy = cv2.findContours(thresh1,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
